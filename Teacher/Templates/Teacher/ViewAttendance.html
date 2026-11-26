@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Attendance</title>
+</head>
+<body>
+    <table width="100%" bgcolor="#e6ffe6" cellpadding="10" border="1">
+        <tr>
+            <td><h2>Teacher Portal</h2></td>
+            <td align="right">
+                <a href="{% url 'Teacher:teacher_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'Teacher:my_profile' %}">My Profile</a> |
+                <a href="{% url 'Teacher:view_timetable' %}">View Timetable</a> |
+                <a href="{% url 'Teacher:select_period_for_qr' %}">Generate QR Attendance</a> |
+                <a href="{% url 'Teacher:view_attendance' %}">View Attendance</a> |
+                <a href="{% url 'Guest:logout' %}">Logout</a>
+            </td>
+        </tr>
+    </table>
+
+    <h1 align="center">Students Attendance Report</h1>
+
+    <!-- Filter Form -->
+    <form action="" method="get">
+        <table border="1" cellpadding="8" align="center">
+            <tr>
+                <td>Select Subject</td>
+                <td>
+                    <select name="assign_id" required>
+                        <option value="">-- Select Subject --</option>
+                        {% for a in assigned_subjects %}
+                            <option value="{{ a.id }}" {% if selected_assign_id == a.id|stringformat:"s" %}selected{% endif %}>
+                                [{{ a.subject.semester.semester_name }}] {{ a.subject.subject_code }} - {{ a.subject.subject_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>Date</td>
+                <td><input type="date" name="date" value="{{ selected_date }}" required></td>
+                <td><input type="submit" value="Search"></td>
+            </tr>
+        </table>
+    </form>
+
+    <br>
+
+    {% if selected_assign %}
+        <h3 align="center">{{ selected_assign.subject.subject_name }} - {{ selected_date }}</h3>
+        <table border="1" align="center" cellpadding="8">
+            <tr bgcolor="#f0f0f0">
+                <td>SNO</td>
+                <td>Photo</td>
+                <td>Roll No</td>
+                <td>Student Name</td>
+                <td>Semester</td>
+                <td>Time</td>
+                <td>Status</td>
+            </tr>
+            {% for att in attendances %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        {% if att.student.student_photo %}
+                            <img src="{{ att.student.student_photo.url }}" width="45" height="45">
+                        {% else %}
+                            No Photo
+                        {% endif %}
+                    </td>
+                    <td>{{ att.student.student_rollno }}</td>
+                    <td>{{ att.student.student_name }}</td>
+                    <td>{{ att.student.semester.semester_name }}</td>
+                    <td>{{ att.attendance_time }}</td>
+                    <td><font color="green"><b>{{ att.status }}</b></font></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7" align="center">No students marked attendance for this class</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+</head>
+<body>
+    <table width="100%" bgcolor="#fff0e6" cellpadding="10" border="1">
+        <tr>
+            <td><h2>Student Portal</h2></td>
+            <td align="right">
+                <a href="{% url 'Student:student_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'Student:my_profile' %}">My Profile</a> |
+                <a href="{% url 'Student:view_timetable' %}">View Timetable</a> |
+                <a href="{% url 'Student:scan_qr' %}">Scan Attendance</a> |
+                <a href="{% url 'Student:view_attendance' %}">View Attendance</a> |
+                <a href="{% url 'Student:complaints' %}">Complaints</a> |
+                <a href="{% url 'Guest:logout' %}">Logout</a>
+            </td>
+        </tr>
+    </table>
+
+    <h1 align="center">My Profile</h1>
+
+    {% if messages %}
+        <div align="center">
+            {% for message in messages %}
+                <font color="green"><b>{{ message }}</b></font><br>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+
+    <table border="1" cellpadding="8" align="center">
+        <tr>
+            <td colspan="2" align="center">
+                {% if student.student_photo %}
+                    <img src="{{ student.student_photo.url }}" width="100" height="100">
+                {% else %}
+                    No Photo
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>{{ student.student_name }}</td>
+        </tr>
+        <tr>
+            <td>Roll Number</td>
+            <td><b>{{ student.student_rollno }}</b></td>
+        </tr>
+        <tr>
+            <td>Semester</td>
+            <td>{{ student.semester.semester_name }}</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>{{ student.student_email }}</td>
+        </tr>
+        <tr>
+            <td>Contact</td>
+            <td>{{ student.student_contact }}</td>
+        </tr>
+        <tr>
+            <td>Address</td>
+            <td>{{ student.student_address }}</td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <a href="{% url 'Student:edit_profile' %}">Edit Profile</a> |
+                <a href="{% url 'Student:change_password' %}">Change Password</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

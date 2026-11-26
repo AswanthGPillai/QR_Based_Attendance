@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Registration</title>
+</head>
+<body>
+    <table width="100%" bgcolor="#e6f2ff" cellpadding="10" border="1">
+        <tr>
+            <td><h2>Admin Panel - IMCA</h2></td>
+            <td align="right">
+                <a href="{% url 'Administrator:admin_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'Administrator:semester' %}">Semester</a> |
+                <a href="{% url 'Administrator:subject' %}">Subject</a> |
+                <a href="{% url 'Administrator:teacher' %}">Teacher</a> |
+                <a href="{% url 'Administrator:assign_subject' %}">Assign Subject</a> |
+                <a href="{% url 'Administrator:generate_timetable' %}">Timetable</a> |
+                <a href="{% url 'Administrator:view_users' %}">Users</a> |
+                <a href="{% url 'Administrator:view_complaints' %}">Complaints</a> |
+                <a href="{% url 'Guest:logout' %}">Logout</a>
+            </td>
+        </tr>
+    </table>
+
+    <h1 align="center">Teacher</h1>
+
+    {% if messages %}
+        <div align="center">
+            {% for message in messages %}
+                <font color="blue"><b>{{ message }}</b></font><br>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+
+    <!-- Add Teacher Form -->
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table border="1" cellpadding="8" align="center">
+            <tr>
+                <td>Teacher Name</td>
+                <td><input type="text" name="txt_name" required placeholder="Name"></td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td><input type="email" name="txt_email" required placeholder="Email"></td>
+            </tr>
+            <tr>
+                <td>Contact</td>
+                <td><input type="text" name="txt_contact" required placeholder="Contact Number"></td>
+            </tr>
+            <tr>
+                <td>Qualification</td>
+                <td><input type="text" name="txt_qualification" value="MCA, M.Tech" required></td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td><textarea name="txt_address" rows="3" cols="25"></textarea></td>
+            </tr>
+            <tr>
+                <td>Photo</td>
+                <td><input type="file" name="file_photo"></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><input type="password" name="txt_password" required placeholder="Password"></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    <input type="submit" value="Submit">
+                    <input type="reset" value="Cancel">
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <br>
+
+    <!-- Teachers List Table -->
+    <h3 align="center">Teachers List</h3>
+    <table border="1" align="center" cellpadding="8">
+        <tr bgcolor="#f0f0f0">
+            <td>SNO</td>
+            <td>Photo</td>
+            <td>Name</td>
+            <td>Email</td>
+            <td>Contact</td>
+            <td>Qualification</td>
+            <td>Action</td>
+        </tr>
+        {% for t in teachers %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    {% if t.teacher_photo %}
+                        <img src="{{ t.teacher_photo.url }}" width="50" height="50">
+                    {% else %}
+                        No Photo
+                    {% endif %}
+                </td>
+                <td>{{ t.teacher_name }}</td>
+                <td>{{ t.teacher_email }}</td>
+                <td>{{ t.teacher_contact }}</td>
+                <td>{{ t.teacher_qualification }}</td>
+                <td>
+                    <a href="{% url 'Administrator:delete_teacher' t.id %}" onclick="return confirm('Are you sure you want to delete?')">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="7" align="center">No Teachers Found</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

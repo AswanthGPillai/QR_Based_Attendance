@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+</head>
+<body>
+    <table width="100%" bgcolor="#fff0e6" cellpadding="10" border="1">
+        <tr>
+            <td><h2>Student Portal - {{ student.student_name }}</h2></td>
+            <td align="right">
+                <a href="{% url 'Student:student_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'Student:my_profile' %}">My Profile</a> |
+                <a href="{% url 'Student:view_timetable' %}">View Timetable</a> |
+                <a href="{% url 'Student:scan_qr' %}"><b>Scan Attendance</b></a> |
+                <a href="{% url 'Student:view_attendance' %}">View Attendance</a> |
+                <a href="{% url 'Student:complaints' %}">Complaints</a> |
+                <a href="{% url 'Guest:logout' %}">Logout</a>
+            </td>
+        </tr>
+    </table>
+
+    <h1 align="center">Welcome {{ student.student_name }}</h1>
+    <h3 align="center">{{ student.semester.semester_name }} | Roll No: {{ student.student_rollno }}</h3>
+
+    {% if messages %}
+        <div align="center">
+            {% for message in messages %}
+                <font color="green"><b>{{ message }}</b></font><br>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+
+    <div align="center">
+        <a href="{% url 'Student:scan_qr' %}">
+            <input type="button" value="📷 Scan QR Code Attendance Now" style="padding:10px 20px; font-size:16px;">
+        </a>
+    </div>
+
+    <br>
+
+    <h3 align="center">Today's Timetable ({{ today_name }})</h3>
+    <table border="1" align="center" cellpadding="8">
+        <tr bgcolor="#f0f0f0">
+            <td>Period</td>
+            <td>Subject</td>
+            <td>Teacher</td>
+        </tr>
+        {% for c in today_classes %}
+            <tr>
+                <td>Period {{ c.period }}</td>
+                <td>{{ c.assign_subject.subject.subject_name }} ({{ c.assign_subject.subject.subject_code }})</td>
+                <td>{{ c.assign_subject.teacher.teacher_name }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3" align="center">No classes scheduled for today</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

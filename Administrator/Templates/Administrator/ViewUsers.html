@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Users</title>
+</head>
+<body>
+    <table width="100%" bgcolor="#e6f2ff" cellpadding="10" border="1">
+        <tr>
+            <td><h2>Admin Panel - IMCA</h2></td>
+            <td align="right">
+                <a href="{% url 'Administrator:admin_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'Administrator:semester' %}">Semester</a> |
+                <a href="{% url 'Administrator:subject' %}">Subject</a> |
+                <a href="{% url 'Administrator:teacher' %}">Teacher</a> |
+                <a href="{% url 'Administrator:assign_subject' %}">Assign Subject</a> |
+                <a href="{% url 'Administrator:generate_timetable' %}">Timetable</a> |
+                <a href="{% url 'Administrator:view_users' %}">Users</a> |
+                <a href="{% url 'Administrator:view_complaints' %}">Complaints</a> |
+                <a href="{% url 'Guest:logout' %}">Logout</a>
+            </td>
+        </tr>
+    </table>
+
+    <h1 align="center">Students List (IMCA)</h1>
+
+    {% if messages %}
+        <div align="center">
+            {% for message in messages %}
+                <font color="blue"><b>{{ message }}</b></font><br>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+
+    <!-- Filter by Semester -->
+    <form action="" method="get" align="center">
+        Filter by Semester:
+        <select name="semester" onchange="this.form.submit()">
+            <option value="">-- All Semesters --</option>
+            {% for sem in semesters %}
+                <option value="{{ sem.id }}" {% if selected_sem == sem.id|stringformat:"s" %}selected{% endif %}>
+                    {{ sem.semester_name }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <br>
+
+    <table border="1" align="center" cellpadding="8">
+        <tr bgcolor="#f0f0f0">
+            <td>SNO</td>
+            <td>Photo</td>
+            <td>Roll No</td>
+            <td>Name</td>
+            <td>Semester</td>
+            <td>Email</td>
+            <td>Contact</td>
+            <td>Address</td>
+            <td>Action</td>
+        </tr>
+        {% for s in students %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    {% if s.student_photo %}
+                        <img src="{{ s.student_photo.url }}" width="45" height="45">
+                    {% else %}
+                        No Photo
+                    {% endif %}
+                </td>
+                <td><b>{{ s.student_rollno }}</b></td>
+                <td>{{ s.student_name }}</td>
+                <td>{{ s.semester.semester_name }}</td>
+                <td>{{ s.student_email }}</td>
+                <td>{{ s.student_contact }}</td>
+                <td>{{ s.student_address }}</td>
+                <td>
+                    <a href="{% url 'Administrator:delete_user' s.id %}" onclick="return confirm('Delete student account?')">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="9" align="center">No Students Found</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

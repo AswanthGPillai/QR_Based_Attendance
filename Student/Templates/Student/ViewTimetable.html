@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Timetable</title>
+</head>
+<body>
+    <table width="100%" bgcolor="#fff0e6" cellpadding="10" border="1">
+        <tr>
+            <td><h2>Student Portal</h2></td>
+            <td align="right">
+                <a href="{% url 'Student:student_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'Student:my_profile' %}">My Profile</a> |
+                <a href="{% url 'Student:view_timetable' %}">View Timetable</a> |
+                <a href="{% url 'Student:scan_qr' %}">Scan Attendance</a> |
+                <a href="{% url 'Student:view_attendance' %}">View Attendance</a> |
+                <a href="{% url 'Student:complaints' %}">Complaints</a> |
+                <a href="{% url 'Guest:logout' %}">Logout</a>
+            </td>
+        </tr>
+    </table>
+
+    <h1 align="center">My Timetable ({{ student.semester.semester_name }})</h1>
+
+    <table border="1" align="center" cellpadding="10" cellspacing="0" width="85%">
+        <tr bgcolor="#f0f0f0" align="center">
+            <td><b>Day</b></td>
+            <td><b>Period 1</b><br>(09:30 - 10:30)</td>
+            <td><b>Period 2</b><br>(10:30 - 11:30)</td>
+            <td><b>Period 3</b><br>(11:45 - 12:45)</td>
+            <td><b>Period 4</b><br>(01:30 - 02:30)</td>
+            <td><b>Period 5</b><br>(02:30 - 03:30)</td>
+        </tr>
+        {% for row in timetable_matrix %}
+            <tr align="center">
+                <td bgcolor="#f9f9f9"><b>{{ row.day }}</b></td>
+                {% for slot in row.slots %}
+                    <td>
+                        {% if slot %}
+                            <b>{{ slot.assign_subject.subject.subject_name }}</b><br>
+                            <small>{{ slot.assign_subject.subject.subject_code }}</small><br>
+                            <i>{{ slot.assign_subject.teacher.teacher_name }}</i>
+                        {% else %}
+                            - Free -
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

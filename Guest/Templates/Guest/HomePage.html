@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMCA Attendance & Timetable</title>
+</head>
+<body>
+    <!-- Top Navigation Links -->
+    <table width="100%" bgcolor="#f0f0f0" cellpadding="10" border="1">
+        <tr>
+            <td>
+                <h2>🎓 Nirmala College - Integrated MCA (IMCA)</h2>
+            </td>
+            <td align="right">
+                <a href="{% url 'Guest:homepage' %}">Home</a> |
+                <a href="{% url 'Guest:login' %}">Login</a> |
+                <a href="{% url 'Guest:user_registration' %}">Student Registration</a>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- Message Alerts -->
+    {% if messages %}
+        <div align="center">
+            {% for message in messages %}
+                <font color="red"><b>{{ message }}</b></font><br>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+
+    <div align="center">
+        <h1>Integrated MCA Portal</h1>
+        <p>Dynamic QR Code Attendance & Timetable Generator</p>
+        <br>
+        <table border="1" cellpadding="15">
+            <tr>
+                <td align="center">
+                    <h3>Already Registered?</h3>
+                    <a href="{% url 'Guest:login' %}">Click Here to Login</a>
+                </td>
+                <td align="center">
+                    <h3>New Student?</h3>
+                    <a href="{% url 'Guest:user_registration' %}">Click Here for Registration</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

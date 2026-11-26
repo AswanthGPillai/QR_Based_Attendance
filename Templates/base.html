@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}IMCA QR Attendance & Timetable{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="brand">
+            🎓 Nirmala IMCA | QR Attendance
+        </a>
+        <ul class="nav-links">
+            {% block nav_links %}
+            {% endblock %}
+        </ul>
+    </header>
+
+    <main class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Nirmala College - Department of Integrated MCA (IMCA) | QR-Based Attendance & Timetable Management System</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+

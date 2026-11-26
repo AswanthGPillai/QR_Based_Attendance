@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Timetable</title>
+</head>
+<body>
+    <table width="100%" bgcolor="#e6f2ff" cellpadding="10" border="1">
+        <tr>
+            <td><h2>Admin Panel - IMCA</h2></td>
+            <td align="right">
+                <a href="{% url 'Administrator:admin_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'Administrator:semester' %}">Semester</a> |
+                <a href="{% url 'Administrator:subject' %}">Subject</a> |
+                <a href="{% url 'Administrator:teacher' %}">Teacher</a> |
+                <a href="{% url 'Administrator:assign_subject' %}">Assign Subject</a> |
+                <a href="{% url 'Administrator:generate_timetable' %}">Timetable</a> |
+                <a href="{% url 'Administrator:view_users' %}">Users</a> |
+                <a href="{% url 'Administrator:view_complaints' %}">Complaints</a> |
+                <a href="{% url 'Guest:logout' %}">Logout</a>
+            </td>
+        </tr>
+    </table>
+
+    <h1 align="center">Timetable Generator</h1>
+
+    {% if messages %}
+        <div align="center">
+            {% for message in messages %}
+                <font color="blue"><b>{{ message }}</b></font><br>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+
+    <!-- Select Semester -->
+    <form action="" method="get">
+        <table border="1" cellpadding="8" align="center">
+            <tr>
+                <td>Select Semester</td>
+                <td>
+                    <select name="semester" onchange="this.form.submit()">
+                        {% for sem in semesters %}
+                            <option value="{{ sem.id }}" {% if selected_sem and selected_sem.id == sem.id %}selected{% endif %}>
+                                {{ sem.semester_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input type="submit" value="Show Timetable"></td>
+            </tr>
+        </table>
+    </form>
+
+    <br>
+
+    {% if selected_sem %}
+        <!-- Auto Generate & Clear Buttons -->
+        <table align="center" cellpadding="8">
+            <tr>
+                <td>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="sel_semester" value="{{ selected_sem.id }}">
+                        <input type="hidden" name="action" value="auto_generate">
+                        <input type="submit" value="Auto-Generate Timetable" onclick="return confirm('Generate Timetable for this semester?')">
+                    </form>
+                </td>
+                <td>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="sel_semester" value="{{ selected_sem.id }}">
+                        <input type="hidden" name="action" value="clear_timetable">
+                        <input type="submit" value="Clear Timetable" onclick="return confirm('Clear timetable for this semester?')">
+                    </form>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+
+        <!-- Timetable Grid -->
+        <h3 align="center">Timetable for {{ selected_sem.semester_name }}</h3>
+        <table border="1" align="center" cellpadding="10" cellspacing="0" width="85%">
+            <tr bgcolor="#f0f0f0" align="center">
+                <td><b>Day</b></td>
+                <td><b>Period 1</b><br>(09:30 - 10:30)</td>
+                <td><b>Period 2</b><br>(10:30 - 11:30)</td>
+                <td><b>Period 3</b><br>(11:45 - 12:45)</td>
+                <td><b>Period 4</b><br>(01:30 - 02:30)</td>
+                <td><b>Period 5</b><br>(02:30 - 03:30)</td>
+            </tr>
+            {% for row in timetable_matrix %}
+                <tr align="center">
+                    <td bgcolor="#f9f9f9"><b>{{ row.day }}</b></td>
+                    {% for slot in row.slots %}
+                        <td>
+                            {% if slot %}
+                                <b>{{ slot.assign_subject.subject.subject_name }}</b><br>
+                                <small>({{ slot.assign_subject.subject.subject_code }})</small><br>
+                                <i>{{ slot.assign_subject.teacher.teacher_name }}</i>
+                            {% else %}
+                                - Free -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        <br><br>
+
+        <!-- Assign Individual Slot Form -->
+        <h3 align="center">Assign / Change Slot</h3>
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="sel_semester" value="{{ selected_sem.id }}">
+            <input type="hidden" name="action" value="manual_add">
+            <table border="1" align="center" cellpadding="8">
+                <tr>
+                    <td>Day</td>
+                    <td>
+                        <select name="sel_day" required>
+                            {% for day in days %}
+                                <option value="{{ day }}">{{ day }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>Period</td>
+                    <td>
+                        <select name="sel_period" required>
+                            {% for p in periods %}
+                                <option value="{{ p }}">Period {{ p }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>Subject & Teacher</td>
+                    <td>
+                        <select name="sel_assign" required>
+                            <option value="">-- Select Subject & Teacher --</option>
+                            {% for a in assigned_for_sem %}
+                                <option value="{{ a.id }}">{{ a.subject.subject_name }} ({{ a.teacher.teacher_name }})</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><input type="submit" value="Save Slot"></td>
+                </tr>
+            </table>
+        </form>
+    {% endif %}
+</body>
+</html>

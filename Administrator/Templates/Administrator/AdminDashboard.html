@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <table width="100%" bgcolor="#e6f2ff" cellpadding="10" border="1">
+        <tr>
+            <td><h2>Admin Panel - IMCA</h2></td>
+            <td align="right">
+                <a href="{% url 'Administrator:admin_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'Administrator:semester' %}">Semester</a> |
+                <a href="{% url 'Administrator:subject' %}">Subject</a> |
+                <a href="{% url 'Administrator:teacher' %}">Teacher</a> |
+                <a href="{% url 'Administrator:assign_subject' %}">Assign Subject</a> |
+                <a href="{% url 'Administrator:generate_timetable' %}">Timetable</a> |
+                <a href="{% url 'Administrator:view_users' %}">Users</a> |
+                <a href="{% url 'Administrator:view_complaints' %}">Complaints</a> |
+                <a href="{% url 'Guest:logout' %}">Logout</a>
+            </td>
+        </tr>
+    </table>
+
+    <h1 align="center">Welcome Admin</h1>
+
+    {% if messages %}
+        <div align="center">
+            {% for message in messages %}
+                <font color="green"><b>{{ message }}</b></font><br>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+
+    <table border="1" cellpadding="15" align="center">
+        <tr>
+            <td align="center">
+                <h3>Total Teachers</h3>
+                <h2>{{ total_teachers }}</h2>
+                <a href="{% url 'Administrator:teacher' %}">Manage Teachers</a>
+            </td>
+            <td align="center">
+                <h3>IMCA Students</h3>
+                <h2>{{ total_students }}</h2>
+                <a href="{% url 'Administrator:view_users' %}">View Students</a>
+            </td>
+            <td align="center">
+                <h3>Total Subjects</h3>
+                <h2>{{ total_subjects }}</h2>
+                <a href="{% url 'Administrator:subject' %}">Manage Subjects</a>
+            </td>
+            <td align="center">
+                <h3>Pending Complaints</h3>
+                <h2>{{ pending_complaints }}</h2>
+                <a href="{% url 'Administrator:view_complaints' %}">View Complaints</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

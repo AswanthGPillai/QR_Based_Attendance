@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic QR Code Attendance</title>
+</head>
+<body>
+    <table width="100%" bgcolor="#e6ffe6" cellpadding="10" border="1">
+        <tr>
+            <td><h2>Teacher Portal - QR Attendance Screen</h2></td>
+            <td align="right">
+                <a href="{% url 'Teacher:teacher_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'Teacher:view_attendance' %}">View Attendance</a> |
+                <a href="{% url 'Teacher:close_qr_session' session_obj.id %}" onclick="return confirm('Do you want to stop attendance?')"><b>Stop Attendance</b></a>
+            </td>
+        </tr>
+    </table>
+
+    <h1 align="center">{{ assign.subject.subject_name }}</h1>
+    <h3 align="center">({{ assign.subject.semester.semester_name }} - {{ assign.subject.subject_code }})</h3>
+
+    <div align="center">
+        <!-- 5-Second Indicator -->
+        <p>QR Code changes every <b><span id="countdown" style="color:red; font-size:24px;">5</span></b> seconds.</p>
+
+        <!-- QR Code Image -->
+        <table border="2" cellpadding="10">
+            <tr>
+                <td>
+                    <img id="qr_img" src="{% url 'Teacher:render_qr_image' session_obj.current_token %}" width="300" height="300">
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <p>Current Code: <b id="token_display" style="font-size:20px; color:blue;">{{ session_obj.current_token }}</b></p>
+        <p>Students Present: <b id="present_counter" style="font-size:20px; color:green;">0</b></p>
+
+        <br>
+        <a href="{% url 'Teacher:close_qr_session' session_obj.id %}" onclick="return confirm('Stop attendance session?')">
+            <input type="button" value="Finish & Close Attendance">
+        </a>
+    </div>
+
+    <!-- Simple JavaScript for 5-Second QR Refresh -->
+    <script>
+        var timeLeft = 5;
+        var countdownEl = document.getElementById('countdown');
+        var qrImgEl = document.getElementById('qr_img');
+        var tokenDisplay = document.getElementById('token_display');
+        var presentCounter = document.getElementById('present_counter');
+        var sessionId = "{{ session_obj.id }}";
+
+        function refreshQRCode() {
+            fetch("/Teacher/GetDynamicToken/" + sessionId + "/")
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.status === 'success') {
+                        qrImgEl.src = "/Teacher/RenderQRImage/" + data.token + "/?t=" + new Date().getTime();
+                        tokenDisplay.innerHTML = data.token;
+                        presentCounter.innerHTML = data.present_count;
+                    }
+                });
+        }
+
+        setInterval(function() {
+            timeLeft = timeLeft - 1;
+            if (timeLeft <= 0) {
+                refreshQRCode();
+                timeLeft = 5;
+            }
+            countdownEl.innerHTML = timeLeft;
+        }, 1000);
+    </script>
+</body>
+</html>

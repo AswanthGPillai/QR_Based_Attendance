@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+</head>
+<body>
+    <h1 align="center">Student Registration (IMCA)</h1>
+
+    {% if messages %}
+        <div align="center">
+            {% for message in messages %}
+                <font color="red"><b>{{ message }}</b></font><br>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table border="1" cellpadding="8" align="center">
+            <tr>
+                <td>Name</td>
+                <td><input type="text" name="txt_name" required></td>
+            </tr>
+            <tr>
+                <td>Roll Number</td>
+                <td><input type="text" name="txt_rollno" required placeholder="e.g. IMCA202601"></td>
+            </tr>
+            <tr>
+                <td>Semester</td>
+                <td>
+                    <select name="sel_semester" required>
+                        <option value="">-- Select Semester --</option>
+                        {% for sem in semesters %}
+                            <option value="{{ sem.id }}">{{ sem.semester_name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td><input type="email" name="txt_email" required></td>
+            </tr>
+            <tr>
+                <td>Contact</td>
+                <td><input type="text" name="txt_contact" required></td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td><textarea name="txt_address" rows="3" cols="25"></textarea></td>
+            </tr>
+            <tr>
+                <td>Photo</td>
+                <td><input type="file" name="file_photo"></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><input type="password" name="txt_password" required></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    <input type="submit" value="Register">
+                    <input type="reset" value="Cancel">
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <br>
+    <div align="center">
+        <a href="{% url 'Guest:login' %}">Already have an account? Login here</a> |
+        <a href="{% url 'Guest:homepage' %}">Home</a>
+    </div>
+</body>
+</html>

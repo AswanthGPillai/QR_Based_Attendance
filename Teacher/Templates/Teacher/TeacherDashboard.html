@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+</head>
+<body>
+    <table width="100%" bgcolor="#e6ffe6" cellpadding="10" border="1">
+        <tr>
+            <td><h2>Teacher Portal - {{ teacher.teacher_name }}</h2></td>
+            <td align="right">
+                <a href="{% url 'Teacher:teacher_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'Teacher:my_profile' %}">My Profile</a> |
+                <a href="{% url 'Teacher:view_timetable' %}">View Timetable</a> |
+                <a href="{% url 'Teacher:select_period_for_qr' %}">Generate QR Attendance</a> |
+                <a href="{% url 'Teacher:view_attendance' %}">View Attendance</a> |
+                <a href="{% url 'Guest:logout' %}">Logout</a>
+            </td>
+        </tr>
+    </table>
+
+    <h1 align="center">Welcome {{ teacher.teacher_name }}</h1>
+
+    {% if messages %}
+        <div align="center">
+            {% for message in messages %}
+                <font color="green"><b>{{ message }}</b></font><br>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+
+    <h3 align="center">Today's Classes ({{ today_name }})</h3>
+    <table border="1" align="center" cellpadding="8">
+        <tr bgcolor="#f0f0f0">
+            <td>Period</td>
+            <td>Semester</td>
+            <td>Subject</td>
+            <td>Action</td>
+        </tr>
+        {% for c in today_classes %}
+            <tr>
+                <td>Period {{ c.period }}</td>
+                <td>{{ c.semester.semester_name }}</td>
+                <td>{{ c.assign_subject.subject.subject_name }}</td>
+                <td>
+                    <a href="{% url 'Teacher:generate_qr_code' c.assign_subject.id %}">Start QR Attendance</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4" align="center">No classes scheduled for today</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
